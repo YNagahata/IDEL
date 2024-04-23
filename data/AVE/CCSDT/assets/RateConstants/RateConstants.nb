@@ -1,0 +1,308 @@
+(* Content-type: application/vnd.wolfram.mathematica *)
+
+(*** Wolfram Notebook File ***)
+(* http://www.wolfram.com/nb *)
+
+(* CreatedBy='Mathematica 12.1' *)
+
+(*CacheID: 234*)
+(* Internal cache information:
+NotebookFileLineBreakTest
+NotebookFileLineBreakTest
+NotebookDataPosition[       158,          7]
+NotebookDataLength[     10392,        300]
+NotebookOptionsPosition[      9570,        278]
+NotebookOutlinePosition[     10025,        296]
+CellTagsIndexPosition[      9982,        293]
+WindowFrame->Normal*)
+
+(* Beginning of Notebook Content *)
+Notebook[{
+
+Cell[CellGroupData[{
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{"ClearAll", "[", "\"\<Global`*\>\"", "]"}], ";", 
+  RowBox[{"acc", "=", "60"}], ";"}], "\n", 
+ RowBox[{
+  RowBox[{"Dir", "=", 
+   RowBox[{"NotebookDirectory", "[", "]"}]}], ";"}], "\n", 
+ RowBox[{"Ext", "=", "\"\<.nb.tsv\>\""}], "\n", 
+ RowBox[{
+  RowBox[{"PhysConst", "=", 
+   RowBox[{"{", 
+    RowBox[{
+     RowBox[{"Tk0", "\[Rule]", 
+      RowBox[{
+       RowBox[{"27315", "/", "100"}], " ", "Kelvin"}]}], ",", 
+     RowBox[{"R", "\[Rule]", 
+      RowBox[{
+       RowBox[{"(", 
+        RowBox[{
+         RowBox[{"83144621", "/", 
+          RowBox[{"10", "^", "7"}]}], " ", "Joule"}], ")"}], "/", 
+       RowBox[{"(", 
+        RowBox[{"Kelvin", " ", "Mole"}], ")"}]}]}], ",", 
+     RowBox[{"kB", "\[Rule]", 
+      RowBox[{
+       RowBox[{"(", 
+        RowBox[{"13806488", "/", 
+         RowBox[{"10", "^", "7"}]}], ")"}], "*", 
+       RowBox[{"10", "^", 
+        RowBox[{"-", "23"}]}], " ", 
+       RowBox[{"Joule", "/", "Kelvin"}]}]}], ",", 
+     RowBox[{"h", "\[Rule]", 
+      RowBox[{
+       RowBox[{"(", 
+        RowBox[{"662606957", "/", 
+         RowBox[{"10", "^", "8"}]}], ")"}], "*", 
+       RowBox[{"10", "^", 
+        RowBox[{"-", "34"}]}], " ", "Joule", "*", "Second"}]}]}], "}"}]}], 
+  ";"}], "\n", 
+ RowBox[{
+  RowBox[{"InFileWL", "=", 
+   RowBox[{"FileNameJoin", "[", 
+    RowBox[{"{", 
+     RowBox[{
+      RowBox[{"ParentDirectory", "[", 
+       RowBox[{"Dir", ",", "5"}], "]"}], ",", "\"\<codes\>\"", ",", 
+      "\"\<scripts\>\"", ",", "\"\<wl\>\"", ",", 
+      "\"\<pairwise-epsilon-indistinguishability.wl\>\""}], "}"}], "]"}]}], 
+  ";"}], "\n", 
+ RowBox[{"Import", "[", "InFileWL", "]"}]}], "Input",
+ CellChangeTimes->{{3.9188110552491426`*^9, 3.9188110883341756`*^9}},
+ CellLabel->
+  "In[162]:=",ExpressionUUID->"aafb7f6c-b443-412d-915f-ef7802df3afd"],
+
+Cell[BoxData["\<\".nb.tsv\"\>"], "Output",
+ CellChangeTimes->{{3.918811061189927*^9, 3.918811089501198*^9}, 
+   3.9222592058812943`*^9},
+ CellLabel->
+  "Out[164]=",ExpressionUUID->"8946da17-7676-4ed3-8975-4e12706f1a2b"]
+}, Open  ]],
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{"FilePathEQs", "=", 
+   RowBox[{"<|", "|>"}]}], ";"}], "\n", 
+ RowBox[{
+  RowBox[{"FilePathTSs", "=", 
+   RowBox[{"<|", "|>"}]}], ";"}], "\n", 
+ RowBox[{"Do", "[", 
+  RowBox[{
+   RowBox[{
+    RowBox[{"AppendTo", "[", 
+     RowBox[{"FilePathEQs", ",", 
+      RowBox[{"Tc", "\[Rule]", 
+       RowBox[{"FileNameJoin", "[", 
+        RowBox[{"{", 
+         RowBox[{
+          RowBox[{"ParentDirectory", "[", 
+           RowBox[{"Dir", ",", "1"}], "]"}], ",", "\"\<GRRM.log\>\"", ",", 
+          RowBox[{"StringJoin", "[", 
+           RowBox[{"\"\<T\>\"", ",", 
+            RowBox[{"StringPadLeft", "[", 
+             RowBox[{
+              RowBox[{"ToString", "[", "Tc", "]"}], ",", "3", ",", 
+              "\"\<0\>\""}], "]"}]}], "]"}], ",", "\"\<energies\>\"", ",", 
+          "\"\<EQ.tsv\>\""}], "}"}], "]"}]}]}], "]"}], ";", 
+    "\[IndentingNewLine]", 
+    RowBox[{"AppendTo", "[", 
+     RowBox[{"FilePathTSs", ",", 
+      RowBox[{"Tc", "\[Rule]", 
+       RowBox[{"FileNameJoin", "[", 
+        RowBox[{"{", 
+         RowBox[{
+          RowBox[{"ParentDirectory", "[", 
+           RowBox[{"Dir", ",", "1"}], "]"}], ",", "\"\<GRRM.log\>\"", ",", 
+          RowBox[{"StringJoin", "[", 
+           RowBox[{"\"\<T\>\"", ",", 
+            RowBox[{"StringPadLeft", "[", 
+             RowBox[{
+              RowBox[{"ToString", "[", "Tc", "]"}], ",", "3", ",", 
+              "\"\<0\>\""}], "]"}]}], "]"}], ",", "\"\<energies\>\"", ",", 
+          "\"\<TS.tsv\>\""}], "}"}], "]"}]}]}], "]"}], ";"}], ",", 
+   RowBox[{"{", 
+    RowBox[{"Tc", ",", "0", ",", "250", ",", "50"}], "}"}]}], "]"}]}], "Input",
+ CellChangeTimes->{{3.9188110956417203`*^9, 3.9188110956445494`*^9}, {
+  3.922259222562473*^9, 3.9222592403400636`*^9}},
+ CellLabel->
+  "In[168]:=",ExpressionUUID->"d8ee1a88-38b3-4a17-b005-da871f59c0f3"],
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"ExportRates", "[", 
+   RowBox[{"kFs_", ",", "OutFileName_"}], "]"}], ":=", 
+  RowBox[{"Module", "[", 
+   RowBox[{
+    RowBox[{"{", "Outs", "}"}], ",", 
+    RowBox[{
+     RowBox[{"Outs", "=", 
+      RowBox[{"{", 
+       RowBox[{"{", 
+        RowBox[{"\"\<#\>\"", ",", "\"\<Tc\>\"", ",", "\"\<kF\>\""}], "}"}], 
+       "}"}]}], ";", "\[IndentingNewLine]", 
+     RowBox[{"Do", "[", 
+      RowBox[{
+       RowBox[{
+        RowBox[{"AppendTo", "[", 
+         RowBox[{"Outs", ",", 
+          RowBox[{"{", 
+           RowBox[{"Tc", ",", 
+            RowBox[{"kFs", "[", "Tc", "]"}]}], "}"}]}], "]"}], ";"}], ",", 
+       RowBox[{"{", 
+        RowBox[{"Tc", ",", "0", ",", "250", ",", "50"}], "}"}]}], "]"}], ";", 
+     "\[IndentingNewLine]", 
+     RowBox[{"Export", "[", 
+      RowBox[{"OutFileName", ",", "Outs", ",", 
+       RowBox[{"\"\<TextDelimiters\>\"", "\[Rule]", "\"\<\>\""}]}], "]"}], 
+     ";"}]}], "]"}]}]], "Input",
+ CellChangeTimes->{{3.9222592668877554`*^9, 3.9222592668877554`*^9}},
+ CellLabel->
+  "In[171]:=",ExpressionUUID->"afa10ae3-7b0d-450f-98d6-1b8222f1e79a"],
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{"KPE", "=", 
+   RowBox[{"<|", "|>"}]}], ";"}], "\n", 
+ RowBox[{
+  RowBox[{"KRL", "=", 
+   RowBox[{"<|", "|>"}]}], ";"}], "\n", 
+ RowBox[{
+  RowBox[{"i", "=", "28"}], ";"}], "\n", 
+ RowBox[{
+  RowBox[{
+   RowBox[{"j1", "=", "20"}], ";", 
+   RowBox[{"(*", "PE", "*)"}], 
+   RowBox[{"Do", "[", 
+    RowBox[{
+     RowBox[{
+      RowBox[{"kBTh", "=", 
+       RowBox[{"Simplify", "[", 
+        RowBox[{
+         RowBox[{"kB", "*", 
+          RowBox[{
+           RowBox[{"(", 
+            RowBox[{
+             RowBox[{"Tc", " ", "Kelvin"}], "+", "Tk0"}], ")"}], "/", "h"}]}],
+          "/.", "PhysConst"}], "]"}]}], ";", "\[IndentingNewLine]", 
+      RowBox[{"RT", "=", 
+       RowBox[{"Simplify", "[", 
+        RowBox[{
+         RowBox[{"R", "*", 
+          RowBox[{"(", 
+           RowBox[{
+            RowBox[{"Tc", " ", "Kelvin"}], "+", "Tk0"}], ")"}]}], "/.", 
+         "PhysConst"}], "]"}]}], ";", "\[IndentingNewLine]", 
+      RowBox[{"EQs", "=", 
+       RowBox[{"ImportEQ", "[", 
+        RowBox[{"FilePathEQs", "[", "Tc", "]"}], "]"}]}], ";", 
+      "\[IndentingNewLine]", 
+      RowBox[{"TSs", "=", 
+       RowBox[{"ImportTS", "[", 
+        RowBox[{"FilePathTSs", "[", "Tc", "]"}], "]"}]}], ";", 
+      "\[IndentingNewLine]", 
+      RowBox[{"AppendTo", "[", 
+       RowBox[{"KRL", ",", 
+        RowBox[{"Tc", "\[Rule]", 
+         RowBox[{"kBTh", "*", 
+          RowBox[{"Exp", "[", 
+           RowBox[{
+            RowBox[{"-", 
+             RowBox[{"SetPrecision", "[", 
+              RowBox[{
+               RowBox[{
+                RowBox[{"TSs", "[", 
+                 RowBox[{"[", 
+                  RowBox[{"i", ",", "4"}], "]"}], "]"}], "-", 
+                RowBox[{"EQs", "[", 
+                 RowBox[{"[", 
+                  RowBox[{"j1", ",", "2"}], "]"}], "]"}]}], ",", "acc"}], 
+              "]"}]}], "*", 
+            RowBox[{"10", "^", "3"}], " ", 
+            RowBox[{
+             RowBox[{"Joule", "/", "Mole"}], "/", 
+             RowBox[{"(", "RT", ")"}]}]}], "]"}]}]}]}], "]"}], ";", 
+      "\[IndentingNewLine]", 
+      RowBox[{"AppendTo", "[", 
+       RowBox[{"KPE", ",", 
+        RowBox[{"Tc", "\[Rule]", 
+         RowBox[{"kBTh", "*", 
+          RowBox[{"Exp", "[", 
+           RowBox[{
+            RowBox[{"-", 
+             RowBox[{"SetPrecision", "[", 
+              RowBox[{
+               RowBox[{
+                RowBox[{"TSs", "[", 
+                 RowBox[{"[", 
+                  RowBox[{"i", ",", "4"}], "]"}], "]"}], "-", 
+                RowBox[{"Min", "[", 
+                 RowBox[{"EQs", "[", 
+                  RowBox[{"[", 
+                   RowBox[{
+                    RowBox[{"14", ";;", "23"}], ",", "2"}], "]"}], "]"}], 
+                 "]"}]}], ",", "acc"}], "]"}]}], "*", 
+            RowBox[{"10", "^", "3"}], " ", 
+            RowBox[{
+             RowBox[{"Joule", "/", "Mole"}], "/", 
+             RowBox[{"(", "RT", ")"}]}]}], "]"}]}]}]}], "]"}], ";"}], ",", 
+     RowBox[{"{", 
+      RowBox[{"Tc", ",", "0", ",", "250", ",", "50"}], "}"}]}], "]"}]}], 
+  "\[IndentingNewLine]", "\n", 
+  RowBox[{"(*", 
+   RowBox[{"Export", " ", "Rates"}], "*)"}]}], "\[IndentingNewLine]", 
+ RowBox[{"ExportRates", "[", 
+  RowBox[{
+   RowBox[{"KPE", " ", "Second"}], ",", 
+   RowBox[{"StringJoin", "[", 
+    RowBox[{"{", 
+     RowBox[{
+      RowBox[{"FileNameJoin", "[", 
+       RowBox[{"{", 
+        RowBox[{"Dir", ",", "\"\<kFs\>\"", ",", "\"\<pe.kf\>\""}], "}"}], 
+       "]"}], ",", "Ext"}], "}"}], "]"}]}], "]"}], "\n", 
+ RowBox[{"ExportRates", "[", 
+  RowBox[{
+   RowBox[{"KRL", " ", "Second"}], ",", 
+   RowBox[{"StringJoin", "[", 
+    RowBox[{"{", 
+     RowBox[{
+      RowBox[{"FileNameJoin", "[", 
+       RowBox[{"{", 
+        RowBox[{"Dir", ",", "\"\<kFs\>\"", ",", "\"\<rl.kf\>\""}], "}"}], 
+       "]"}], ",", "Ext"}], "}"}], "]"}]}], "]"}]}], "Input",
+ CellChangeTimes->{{3.922259281691168*^9, 3.922259281706785*^9}},
+ CellLabel->
+  "In[172]:=",ExpressionUUID->"6455a358-7796-40b1-a111-c1e352237f07"]
+},
+WindowSize->{1152., 580.5},
+WindowMargins->{{
+  Automatic, -4.7999999999999545`}, {-4.7999999999999545`, Automatic}},
+FrontEndVersion->"12.1 for Microsoft Windows (64-bit) (2020\:5e746\:670822\
+\:65e5)",
+StyleDefinitions->"Default.nb",
+ExpressionUUID->"b8305811-48cc-4dd0-8577-9892aecec152"
+]
+(* End of Notebook Content *)
+
+(* Internal cache information *)
+(*CellTagsOutline
+CellTagsIndex->{}
+*)
+(*CellTagsIndex
+CellTagsIndex->{}
+*)
+(*NotebookFileOutline
+Notebook[{
+Cell[CellGroupData[{
+Cell[580, 22, 1810, 52, 208, "Input",ExpressionUUID->"aafb7f6c-b443-412d-915f-ef7802df3afd"],
+Cell[2393, 76, 219, 4, 32, "Output",ExpressionUUID->"8946da17-7676-4ed3-8975-4e12706f1a2b"]
+}, Open  ]],
+Cell[2627, 83, 1834, 46, 246, "Input",ExpressionUUID->"d8ee1a88-38b3-4a17-b005-da871f59c0f3"],
+Cell[4464, 131, 1109, 30, 115, "Input",ExpressionUUID->"afa10ae3-7b0d-450f-98d6-1b8222f1e79a"],
+Cell[5576, 163, 3990, 113, 356, "Input",ExpressionUUID->"6455a358-7796-40b1-a111-c1e352237f07"]
+}
+]
+*)
+
