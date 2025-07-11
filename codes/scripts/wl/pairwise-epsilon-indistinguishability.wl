@@ -40,7 +40,113 @@ RateConstants[EQs_, TSs_, PhysConst_, acc_, Tc_] := Module[{kBTh, RT, MxD, MxM, 
   Transpose[Array[MxM, {Nk, Nk}]]
   ];
 
-(* Pairwise epsilon-indistinguishability list *)
+(* build a coefficient matrix of the 1st order rate equation ver 2 *)
+RateConstantMatrix[InEQ_, InTS_, PhysConst_, acc_, Tc_] := Module[{kBTh, RT, EQs,idxs,Nk,lbl,RC,dG},
+    (* Rate Matrix *)
+    RT = R*(Tc Kelvin + Tk0)/.PhysConst;
+    kBTh = kB*(Tc Kelvin + Tk0)/h/.PhysConst;
+    (* Energy *)
+    EQs = <||>;
+    idxs = <||>;
+    Nk = Length[InEQ];
+    Do[
+        lbl = InEQ[[idx]][[1]];
+        idxs[lbl] = idx;
+        EQs[lbl] = Round[InEQ[[idx]][[2]]*10^3];
+        ,{idx,1,Nk}];
+    (* Rate constant matrix K *)
+    RC = <||>;
+    Do[
+        {l1,l2} = InTS[[i]][[2;;3]];
+        If[l1<=Nk&&l2<=Nk&&l1!=l2,
+            RC[{idxs[l1],idxs[l2]}] = 0;
+            RC[{idxs[l2],idxs[l1]}] = 0;
+            ];
+        ,{i,1,Length[InTS]}];
+    Do[RC[{k,k}] = 0;,{k,1,Nk}];
+    Do[
+        {l1,l2} = InTS[[i]][[2;;3]];
+        If[l1<=Nk&&l2<=Nk&&l1!=l2,
+            dG = Round[InTS[[i]][[4]]*10^3];
+            RC[{idxs[l1],idxs[l2]}] += kBTh*Exp[-(dG - EQs[l2]) Joule/Mole /RT];
+            RC[{idxs[l2],idxs[l2]}] -= kBTh*Exp[-(dG - EQs[l2]) Joule/Mole /RT];
+            RC[{idxs[l2],idxs[l1]}] += kBTh*Exp[-(dG - EQs[l1]) Joule/Mole /RT];
+            RC[{idxs[l1],idxs[l1]}] -= kBTh*Exp[-(dG - EQs[l1]) Joule/Mole /RT];
+            ];
+        ,{i,1,Length[InTS]}];
+    N[SparseArray[Rule @@@ Normal[Simplify[RC Second]], Max /@ Transpose[Keys[RC]]],acc]
+    ];
+    
+(* avoiding overflow of large exponential *)
+RPow[Lt_] := Module[{LtOut},
+    LtOut = {};
+    Do[
+        If[Lt[[i]] < -700 || 10^(10) < Lt[[i]] ,
+            AppendTo[LtOut, Sign[Lt[[i]]] Infinity],
+            AppendTo[LtOut, Lt[[i]]]
+            ];
+        ,{i, 1, Length[Lt]}];
+    LtOut
+    ];
+(* Naive root finding for Indistinguish ver  2 *)
+BisectionMethod[f_, {a_, b_}, precisionGoal_, maxIterations_] :=
+    Module[{left = a, right = b, mid, fl, fr, fmid = Infinity, iter = 0},
+        (* Check if a root is bracketed *)
+        fl = f[left];
+        fr = f[right];
+        
+        If[fl * fr > 0,
+            Print["Error: The function has the same sign at the interval endpoints. Bisection method may not converge."];
+            Return[$Failed]
+        ];
+        
+        While[Abs[fmid] > precisionGoal && iter < maxIterations,
+            mid = (left + right) / 2;
+            fmid = f[mid];
+            
+            If[fmid == 0,
+                Return[mid] (* Found exact root *)
+            ];
+
+            If[fl * fmid < 0,
+                right = mid;
+                fr = fmid;
+                ,
+                left = mid;
+                fl = fmid;
+            ];
+            iter++;
+        ];
+        (left + right) / 2
+    ];
+(* Pairwise epsilon-indistinguishability list ver 2 *)
+Indistinguish[\[Epsilon]_, InEQ_, ESys_,acc_] := Module[{Log1E,Nk,LInfLogP,k,lsRt},
+    Log1E = Log[1+\[Epsilon]];
+    EVal = ESys["Val"];
+    EVecR = ESys["VecR"];
+    EVecL = ESys["VecL"];
+    Nk = Length[EVal];
+    (* LInfLogP *)
+    LInfLogP[j1_, j2_, dt_] :=
+        Max[Abs[
+             Log[Transpose[EVecR].DiagonalMatrix[Exp[RPow[dt EVal]]].EVecL[[All,j1]]/
+             Transpose[EVecR].DiagonalMatrix[Exp[RPow[dt EVal]]].EVecL[[All,j2]]]      
+        ]];
+    (* lsRt *)
+    precisionGoal = 10^(-200);
+    maxIterations = 1000;
+    {nmin, nmax} = {-20,30};
+    lsRt = {};
+    Do[
+        f[n_] := LInfLogP[j1, j2, 10^n]-Log1E;
+        n = BisectionMethod[f, {nmin, nmax}, precisionGoal, maxIterations];
+        AppendTo[lsRt,{InEQ[[j1, 1]], InEQ[[j2, 1]], N[10^n,acc]}];
+    , {j1, 1, Nk}, {j2, j1 + 1, Nk}];
+    Sort[lsRt, #1[[3]] < #2[[3]] &]
+];
+
+(* Pairwise epsilon-indistinguishability list ver 1 *)
+(*
 Indistinguish[\[Epsilon]_, lsM_, EQs_, EVal_, EVecR_, EVecL_,acc_] := Module[{Log1E,Nk,LInfLogP,k,lsRt},
   Log1E = Log[1+\[Epsilon]];
   Nk = Length[EVal];
@@ -73,6 +179,7 @@ Indistinguish[\[Epsilon]_, lsM_, EQs_, EVal_, EVecR_, EVecL_,acc_] := Module[{Lo
   Clear[k, LInfLogP];
   Sort[lsRt, #1[[3]] < #2[[3]] &]
   ]
+*)
 
 (* Lump a Matrix K by Nagahata's Exact Lumping *)
 LumpExact[Blng_, K_, EVecR_, EVecL_] := Module[{CHat, FHat, LHat, Nk},
